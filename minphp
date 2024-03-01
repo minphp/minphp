@@ -1,0 +1,74 @@
+#!/usr/bin/env php
+<?php
+
+if ($argc < 2) {
+    displayHelp();
+    exit(1);
+}
+
+$command = $argv[1];
+
+switch ($command) {
+    case 'create-page':
+        if ($argc < 3) {
+            echo "Error: Missing page name. Usage: php minphp create-page <name>\n";
+            exit(1);
+        }
+
+        $name = $argv[2];
+        createPage($name);
+        break;
+    case 'help':
+        displayHelp();
+        break;
+    default:
+        echo "Unknown command: $command\n";
+        displayHelp();
+        exit(1);
+}
+
+function displayHelp(): void
+{
+    echo "Usage: php minphp <command>\n";
+    echo "Available commands:\n";
+    echo "  create-page <name> - Create a new page with the given name\n";
+    // Add more command descriptions as needed
+    echo "  help               - Display this help message\n";
+}
+
+function createPage($name): void
+{
+    if (! (preg_match('/^[a-zA-Z0-9_]+$/', $name) === 1)) {
+        echo "Error: Invalid page name '$name'. Page names can only contain letters, numbers, and underscores.\n";
+        exit(1);
+    }
+
+    $name .= 'Page';
+
+    $pagesDirectory = __DIR__ . '/Pages/';
+    $fileName = $pagesDirectory . $name . '.php';
+
+    if (file_exists($fileName)) {
+        echo "Error: Page '$name' already exists.\n";
+        exit(1);
+    }
+
+    $pageContent = generatePageContent($name);
+
+    if (file_put_contents($fileName, $pageContent)) {
+        echo "Page '$name' created successfully.\n";
+    } else {
+        echo "Error creating page '$name'.\n";
+        exit(1);
+    }
+}
+
+function generatePageContent($name): string
+{
+    $template = "<?php\n\nnamespace Pages;\n\nuse MinPhp\Page\Contracts\PageInterface;\n\nclass {$name} implements PageInterface\n{\n";
+    $template .= "\tpublic function render(): string\n\t{\n";
+    $template .= "\t\treturn 'Hello from {$name}';\n";
+    $template .= "\t}\n}\n";
+
+    return $template;
+}
