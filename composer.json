@@ -1,0 +1,22 @@
+{
+  "name": "minxphp/minphp",
+  "type": "project",
+  "description": "The skeleton application for the MinPhp framework.",
+  "keywords": ["minphp", "framework"],
+  "license": "MIT",
+  "require": {
+    "php": "^8.3",
+    "minxphp/framework": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Pages\\": "Pages/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "minimum-stability": "dev"
+}
